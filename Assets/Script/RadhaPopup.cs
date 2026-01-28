@@ -28,17 +28,29 @@ public class RadhaPopup : MonoBehaviour
         radhaText.text = "Radha";
 
         radhaText.color = GetRandomColor();
-        radhaText.transform.localScale = Vector3.zero;
+
+        // Reset scale & alpha
+        radhaText.transform.localScale = Vector3.one * 0.1f;
         radhaText.alpha = 0f;
 
 #if UNITY_ANDROID || UNITY_IOS
         Handheld.Vibrate();
 #endif
+
         Sequence seq = DOTween.Sequence();
-        seq.Append(radhaText.DOFade(1f, 0.3f));
-        seq.Join(radhaText.transform
-            .DOScale(1.2f, 0.4f)
-            .SetEase(Ease.OutBack));
+
+        seq.Append(radhaText.DOFade(1f, 0.4f));
+
+        seq.Join(
+            radhaText.transform.DOScale(1.2f, 0.9f)
+                .SetEase(Ease.OutExpo)
+                .OnComplete(() =>
+                {
+                    radhaText.transform
+                        .DOScale(1.3f, 0.15f)
+                        .SetEase(Ease.OutBack);
+                })
+        );
 
         seq.AppendInterval(1f);
 
